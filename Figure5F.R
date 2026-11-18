@@ -1,20 +1,11 @@
-# ============================================================
-# Panel B: 7 维度森林图
-# 输入：
-#   <INPUT_DIR>/panelB_dimension.csv  —— Dimension, SMD, SMD_CI_L, SMD_CI_U, Fisher_Padj
-# 输出：
-#   <OUT_DIR>/PanelB_Dimension_Forest.pdf
-# ============================================================
-
 library(ggplot2)
 library(dplyr)
 
-INPUT_DIR <- "<INPUT_DIR>"
-OUT_DIR   <- "<OUT_DIR>"
-if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
+INPUT_DIR <- "data/"
+OUT_DIR   <- "output"
 
-# ---------- 读数据 ----------
-df <- read.csv(file.path(INPUT_DIR, "panelB_dimension.csv"),
+
+df <- read.csv(file.path(INPUT_DIR, "Figure5F_dimension.csv"),
                stringsAsFactors = FALSE)
 
 df <- df %>%
@@ -30,7 +21,6 @@ x_span  <- diff(x_range)
 x_max   <- x_range[2] + x_span * 0.12
 x_min   <- x_range[1] - x_span * 0.05
 
-# ---------- 画图 ----------
 p_B <- ggplot(df, aes(x = SMD, y = Dimension, color = Is_Sig)) +
   geom_vline(xintercept = 0, linetype = "dashed",
              color = "grey30", alpha = 0.6, linewidth = 0.7) +

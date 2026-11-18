@@ -1,5 +1,5 @@
 library(ggplot2)
-####################Figure S5B-D: Both-clustered versus Non-clustered####################
+#Figure S5B-D
 read_input<-function(f,cols){p<-file.path("data",f);if(!file.exists(p))stop("Missing ",p);d<-read.csv(p,check.names=FALSE,stringsAsFactors=FALSE);m<-setdiff(cols,names(d));if(length(m))stop(f," missing: ",paste(m,collapse=", "));d}
 fmtp<-function(p)ifelse(p<.001,"<0.001",sprintf("%.3f",p))
 cols<-c(Both="#c75a35",Non="#4C83A8")

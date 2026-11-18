@@ -27,3 +27,4 @@ p <- ggplot(dat,aes(x = neg_log10_q,y = Dimension,color = Significance)) +
     plot.subtitle = element_text(size = 10,color = "grey30"),
     plot.caption = element_text(size = 8,color = "grey35",hjust = 0),
     plot.margin = margin(10, 115, 10, 10))
+ggsave(file.path(output_dir, "Figure_Seven_Dimension_Integrated_Evidence.pdf"),plot = p)

@@ -5,7 +5,6 @@ library(tidytext)
 library(cowplot)
 
 #Figure S4A
-# 1. Draw the 115-gene tissue profile from previously calculated sampling summaries
 x <- read.csv("data/GTEx_sampling.csv",stringsAsFactors=FALSE)
 stopifnot(all(c("GeneSet","Tissue","Group","Mean","Lower","Upper") %in% names(x)))
 x <- x %>% filter(GeneSet=="115")
@@ -26,7 +25,6 @@ print(pS4a)
 ggsave("output/FigureS4A_GTEx.svg",pS4a,width=22,height=15,units="cm")
 
 #Figure S4B
-# 1. Read 21 class-by-cell-type tests; FDR was computed across all 21 comparisons
 s <- read.csv("data/scRNA_bubble.csv",stringsAsFactors=FALSE)
 stopifnot(all(c("Class","Celltype","Mean_Z","P","FDR") %in% names(s)),nrow(s)==21)
 stopifnot(all(is.finite(s$Mean_Z)),all(s$FDR>=0 & s$FDR<=1))

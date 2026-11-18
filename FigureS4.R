@@ -4,7 +4,7 @@ library(svglite)
 library(tidytext)
 library(cowplot)
 
-####################Figure S4A: GTEx tissue expression####################
+#Figure S4A
 # 1. Draw the 115-gene tissue profile from previously calculated sampling summaries
 x <- read.csv("data/GTEx_sampling.csv",stringsAsFactors=FALSE)
 stopifnot(all(c("GeneSet","Tissue","Group","Mean","Lower","Upper") %in% names(x)))
@@ -25,7 +25,7 @@ pS4a <- ggplot(x,aes(Tissue,Mean,color=Group,group=Group))+
 print(pS4a)
 ggsave("output/FigureS4A_GTEx.svg",pS4a,width=22,height=15,units="cm")
 
-####################Figure S4B: scRNA-seq class-specific module scores####################
+#Figure S4B
 # 1. Read 21 class-by-cell-type tests; FDR was computed across all 21 comparisons
 s <- read.csv("data/scRNA_bubble.csv",stringsAsFactors=FALSE)
 stopifnot(all(c("Class","Celltype","Mean_Z","P","FDR") %in% names(s)),nrow(s)==21)
@@ -53,13 +53,11 @@ pS4b <- ggplot(s,aes(x=Celltype,y=Class))+
 print(pS4b)
 ggsave("output/FigureS4B_scRNA_bubble.svg",pS4b,width=16,height=8,units="cm")
 
-####################Supplementary GO, KEGG and DisGeNET enrichment####################
-# 1. Plot selected significant terms from the original analyses; no API access needed
+#Figure S4C-D
 z <- read.csv("data/Enrichment_plot.csv",stringsAsFactors=FALSE)
 required <- c("Analysis","Database","Class","Description","GeneRatio_num","Count","FDR")
 stopifnot(all(required %in% names(z)),nrow(z)>0)
 stopifnot(all(z$GeneRatio_num>=0),all(z$Count>=0),all(z$FDR>0 & z$FDR<=1))
-# 2. Produce 1x3 dot-plot sets for each analysis in the input table
 for(analysis in unique(z$Analysis)){
   d <- z %>% filter(Analysis==analysis)
   if(analysis=="methods") db_order <- c("GO_BP","KEGG","DisGeNET")
@@ -82,6 +80,4 @@ for(analysis in unique(z$Analysis)){
   })
   p <- cowplot::plot_grid(plotlist=plots,nrow=1,align="h",axis="tb")
   print(p)
-  ggsave(paste0("output/FigureS4_enrichment_",analysis,".svg"),p,
-         width=52,height=18,units="cm")
-}
+  ggsave(paste0("output/FigureS4_enrichment_",analysis,".svg"),p,width=52,height=18,units="cm")}

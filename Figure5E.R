@@ -1,12 +1,5 @@
-# ============================================================
-# Panel A: dRSA 小提琴图
-# 输入：
-#   <INPUT_DIR>/dRSA_long.csv   —— Gene, Group, Value
-#   <INPUT_DIR>/dRSA_stats.csv  —— 单行：Padj_Benign_Non, Padj_Benign_Both,
-#                                          Padj_Non_Both, SMD_Non_vs_Both, SMD_CI_L, SMD_CI_U
-# 输出：
-#   <OUT_DIR>/PanelA_dRSA_violin.pdf
-# ============================================================
+
+# Panel A: dRSA violin
 
 library(ggplot2)
 library(dplyr)
@@ -16,7 +9,6 @@ INPUT_DIR <- "<INPUT_DIR>"
 OUT_DIR   <- "<OUT_DIR>"
 if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
 
-# ---------- 读数据 ----------
 drsa_df <- read.csv(file.path(INPUT_DIR, "dRSA_long.csv"),
                     stringsAsFactors = FALSE)
 stats   <- read.csv(file.path(INPUT_DIR, "dRSA_stats.csv"),
@@ -40,13 +32,11 @@ my_colors <- c(
   "Both-clustered variants" = "#D05A4E"
 )
 
-# ---------- 显著性比较 ----------
 comps <- list()
 if (isTRUE(p_bn < 0.05)) comps[[length(comps) + 1]] <- c("Benign variants", "Non-clustered variants")
 if (isTRUE(p_bd < 0.05)) comps[[length(comps) + 1]] <- c("Benign variants", "Both-clustered variants")
 if (isTRUE(p_nd < 0.05)) comps[[length(comps) + 1]] <- c("Non-clustered variants", "Both-clustered variants")
 
-# ---------- 画图 ----------
 p_A <- ggplot(drsa_df, aes(x = Group, y = Value, fill = Group)) +
   geom_violin(trim = FALSE, alpha = 0.85, color = NA) +
   geom_boxplot(width = 0.12, color = "black", alpha = 0.6,

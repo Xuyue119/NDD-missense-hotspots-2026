@@ -1,17 +1,17 @@
 #Figure S6C: algorithm-specific continuous outcomes
-# 1. Packages and data
+
 library(ggplot2)
 library(svglite)
 DATA <- "data"
 OUT <- "output"
-dir.create(OUT,recursive=TRUE,showWarnings=FALSE)
+
 f <- file.path(DATA,"FigureS6C_HC3.csv")
 d <- read.csv(f,stringsAsFactors=FALSE,check.names=FALSE)
 required <- c("phenotype","label","beta","p_raw","p_adj","status","n_ThreeD","n_Near")
 
 SEL <- c("scq_total","rbsr_total","rbsr_compulsive","rbsr_stereotyped","age_onset_mos")
 d <- d[match(SEL,d$phenotype),,drop=FALSE]
-# 2. Display ORIGINAL raw HC3 P values, not the BH5 values.
+
 p_label <- function(x)ifelse(is.finite(x),ifelse(x<.001,"p < 0.001",sprintf("p = %.3f",x)),"NT")
 d$label <- factor(ifelse(is.na(d$label)|!nzchar(d$label),d$phenotype,d$label),levels=rev(ifelse(is.na(d$label)|!nzchar(d$label),d$phenotype,d$label)))
 d$cell <- p_label(d$p_raw)

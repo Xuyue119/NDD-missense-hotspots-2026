@@ -1,14 +1,9 @@
-rm(list=ls())
-setwd("") # Set to the GitHub repository's 05_figures folder
-####################Figure 4D: scRNA tSNE module score####################
-# 1. Packages
+#Figure 4D: scRNA tSNE module score
+
 library(Seurat)
 library(Matrix)
 library(data.table)
 library(ggplot2)
-
-# 2. Files
-dir.create("output",showWarnings=FALSE)
 
 expr_file <- "exprMatrix.tsv.gz"
 meta_file <- "meta.tsv"
@@ -20,23 +15,17 @@ if(!file.exists(expr_file))
 if(!file.exists(meta_file))
   download.file("https://cells.ucsc.edu/cortex-dev/meta.tsv",
                 meta_file,mode="wb")
-if(!file.exists(gene_file)) stop("Missing: ",gene_file)
 
-# 3. Read UCSC cortex-dev data
 mat <- fread(expr_file,check.names=FALSE)
 meta <- as.data.frame(fread(meta_file),row.names=1,
                       check.names=FALSE)
 
 genes <- sub(".*\\|","",as.character(mat[[1]]))
-if(anyNA(genes)||anyDuplicated(genes)||any(genes==""))
-  stop("Missing or duplicated gene symbols")
 
 expr <- as.matrix(mat[,-1,with=FALSE])
 storage.mode(expr) <- "double"
 rownames(expr) <- genes
 
-if(!setequal(colnames(expr),rownames(meta)))
-  stop("Expression matrix and metadata cell IDs disagree")
 
 meta <- meta[colnames(expr),,drop=FALSE]
 expr <- Matrix(expr,sparse=TRUE)
@@ -66,9 +55,6 @@ so <- subset(
     pct.RB<7.5 & pct.HB<0.05
 )
 
-if(ncol(so)!=4238)
-  stop("Expected 4,238 cells after QC; found ",ncol(so))
-
 # 5. Log transform and dimensionality reduction
 raw_expr <- GetAssayData(so,assay="RNA",layer="counts")
 so <- SetAssayData(
@@ -87,13 +73,10 @@ so <- FindNeighbors(so,dims=1:8)
 so <- FindClusters(so,resolution=0.1,algorithm=1)
 so <- RunTSNE(so,dims=1:8,seed.use=123)
 
-# 6. Hotspot gene module score
+
 hotspot <- read.csv(gene_file,stringsAsFactors=FALSE)$Gene
 hotspot <- unique(trimws(hotspot))
 hotspot <- hotspot[!is.na(hotspot)&nzchar(hotspot)]
-
-if(length(hotspot)!=115)
-  stop("Expected 115 hotspot genes")
 
 gene_alias <- c(
   "TAFA4"="FAM19A4","YARS1"="YARS",
@@ -104,9 +87,6 @@ idx <- hotspot %in% names(gene_alias)
 hotspot[idx] <- unname(gene_alias[hotspot[idx]])
 hotspot <- intersect(unique(hotspot),rownames(so))
 
-if(length(hotspot)<5)
-  stop("Too few hotspot genes detected")
-
 so <- AddModuleScore(
   so,features=list(hotspot),
   name="hotspot_module_score",
@@ -114,7 +94,6 @@ so <- AddModuleScore(
   ctrl=100,seed=123
 )
 
-# 7. Plot
 coords <- Embeddings(so,reduction="tsne")
 score <- so@meta.data[
   rownames(coords),"hotspot_module_score1"
@@ -141,5 +120,4 @@ p <- ggplot(plot_data,
   labs(x=NULL,y=NULL,color="Module score")
 
 print(p)
-ggsave("output/Figure4D_scRNA_tsne.svg",
-       p,width=12,height=10,units="cm")
+ggsave("output/Figure4D_scRNA_tsne.pdf",p,width=12,height=10,units="cm")

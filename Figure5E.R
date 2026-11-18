@@ -5,9 +5,8 @@ library(ggplot2)
 library(dplyr)
 library(ggpubr)
 
-INPUT_DIR <- "<INPUT_DIR>"
-OUT_DIR   <- "<OUT_DIR>"
-if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
+INPUT_DIR <- "data/"
+OUT_DIR   <- "output"
 
 drsa_df <- read.csv(file.path(INPUT_DIR, "dRSA_long.csv"),
                     stringsAsFactors = FALSE)

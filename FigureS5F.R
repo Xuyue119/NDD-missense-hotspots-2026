@@ -1,21 +1,10 @@
-# ============================================================
-# Panel C: 27 参数森林图
-# 输入：
-#   <INPUT_DIR>/panelC_parameters.csv  —— Parameter, SMD, SMD_CI_L, SMD_CI_U,
-#                                          Padj, Evidence_Level
-#                                          Evidence_Level ∈ {Strong, Supporting, No evidence}
-# 输出：
-#   <OUT_DIR>/PanelC_ParamForest.pdf
-# ============================================================
-
 library(ggplot2)
 library(dplyr)
 
-INPUT_DIR <- "<INPUT_DIR>"
-OUT_DIR   <- "<OUT_DIR>"
-if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
+INPUT_DIR <- "data"
+OUT_DIR   <- "output"
 
-# ---------- 读数据 ----------
+
 df <- read.csv(file.path(INPUT_DIR, "panelC_parameters.csv"),
                stringsAsFactors = FALSE)
 df <- df %>%
@@ -26,7 +15,7 @@ df <- df %>%
     Param_f = factor(Parameter, levels = Parameter[order(SMD)])
   )
 
-# ---------- 画图 ----------
+
 p_C <- ggplot(df, aes(x = SMD, y = Param_f, color = Evidence_Level)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black", alpha = 0.5) +
   geom_errorbarh(aes(xmin = SMD_CI_L, xmax = SMD_CI_U),

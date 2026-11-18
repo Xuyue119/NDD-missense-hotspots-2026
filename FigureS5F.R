@@ -15,7 +15,6 @@ df <- df %>%
     Param_f = factor(Parameter, levels = Parameter[order(SMD)])
   )
 
-
 p_C <- ggplot(df, aes(x = SMD, y = Param_f, color = Evidence_Level)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "black", alpha = 0.5) +
   geom_errorbarh(aes(xmin = SMD_CI_L, xmax = SMD_CI_U),
@@ -39,6 +38,4 @@ p_C <- ggplot(df, aes(x = SMD, y = Param_f, color = Evidence_Level)) +
         legend.text     = element_text(size = 16),
         legend.title    = element_text(size = 17))
 
-ggsave(file.path(OUT_DIR, "PanelC_ParamForest.pdf"),
-       p_C, width = 15, height = 16)
-cat("Panel C saved.\n")
+ggsave(file.path(OUT_DIR, "FigureS5F_ParamForest.pdf"), p_C, width = 15, height = 16)

@@ -1,12 +1,13 @@
 library(ggplot2)
 library(svglite)
-####################Figure 2B-E####################
-dir.create("output",showWarnings=FALSE)
+#Figure 2B-E
+
 red <- "#BF1D2D"; blue <- "#3D549D"
 star <- function(p) ifelse(is.na(p),"",ifelse(p<0.001,"***",ifelse(p<0.01,"**",ifelse(p<0.05,"*",""))))
 save_panel <- function(p,name,w=8.5,h=7.5){print(p);ggsave(file.path("output",paste0(name,".svg")),p,width=w,height=h,units="cm");ggsave(file.path("output",paste0(name,".pdf")),p,width=w,height=h,units="cm")}
 base_theme <- theme_classic(base_size=10)+theme(axis.text=element_text(color="black"),axis.title=element_text(color="black"),axis.line=element_line(linewidth=0.5),axis.ticks=element_line(linewidth=0.5))
-####################1. Figure 2B-C: burden forest plots####################
+
+#Figure 2B-C: burden forest plots
 burden <- read.csv("data/Figure2_BC.csv",check.names=FALSE)
 plot_forest <- function(panel,levels,xlim,xbreaks){
   d <- subset(burden,Panel==panel)
@@ -23,14 +24,13 @@ plot_forest <- function(panel,levels,xlim,xbreaks){
 }
 plot_forest("B",c("MIS","LGD","SYN"),c(0.90,1.51),seq(0.9,1.5,0.1))
 plot_forest("C",c("CADD ≥ 30","20 ≤ CADD < 30","CADD < 20"),c(0.75,1.33),seq(0.8,1.3,0.1))
-####################2. Shared score ECDF input and annotations####################
+#Shared score ECDF input and annotations
 ecdf <- read.csv("data/FigureS2_Predictor_ECDF.csv",check.names=FALSE)
 stats <- read.csv("data/FigureS2_Plot_statistics.csv",check.names=FALSE)
 ecdf$Group <- factor(ecdf$Group,levels=c("Proband","Sibling"))
 panel_star <- function(panel){s <- stats$p_adj_BH[stats$Panel==panel];if(length(s)!=1) stop(paste("Missing/duplicated adjusted P for",panel));star(s)}
-####################3. Figure 2D: CADD ECDF####################
+#Figure 2D: CADD ECDF
 d <- subset(ecdf,Predictor=="CADD")
-if(!nrow(d)) stop("No CADD ECDF data")
 p2d <- ggplot(d,aes(x=Score,y=Cumulative_proportion,color=Group,group=Group))+
   geom_step(linewidth=0.75,direction="hv")+
   geom_vline(xintercept=c(20,30),linetype=2,linewidth=0.45,color="#8A8A8A")+
@@ -41,7 +41,7 @@ p2d <- ggplot(d,aes(x=Score,y=Cumulative_proportion,color=Group,group=Group))+
   labs(x="CADD PHRED score",y="Cumulative proportion",color=NULL)+base_theme+
   theme(legend.position="top",legend.justification="left")
 save_panel(p2d,"Figure2D")
-####################4. Figure 2E: gene-level CADD by dnMIS recurrence####################
+#Figure 2E: gene-level CADD by dnMIS recurrence
 gene <- read.csv("data/Figure2E_gene_CADD.csv",check.names=FALSE)
 gene$Category <- factor(gene$Category,levels=c("1","2","3","4+"))
 if(!nrow(gene) || anyNA(gene$Category)) stop("Invalid gene recurrence input")

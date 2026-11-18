@@ -1,6 +1,4 @@
-
-# Panel A: dRSA violin
-
+# Figure5E
 library(ggplot2)
 library(dplyr)
 library(ggpubr)
@@ -63,6 +61,4 @@ if (length(comps) > 0) {
     size = 6.0, vjust = 0.4)
 }
 
-ggsave(file.path(OUT_DIR, "PanelA_dRSA_violin.pdf"),
-       p_A, width = 12, height = 11)
-cat("Panel A saved.\n")
+ggsave(file.path(OUT_DIR, "PanelA_dRSA_violin.pdf"), p_A, width = 12, height = 11)

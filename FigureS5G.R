@@ -4,8 +4,7 @@ library(dplyr)
 INPUT_DIR <- "data"
 OUT_DIR   <- "output"
 
-mv_clean <- read.csv(file.path(INPUT_DIR, "FigureS5G_mv_clean.csv"),
-                     stringsAsFactors = FALSE)
+mv_clean <- read.csv(file.path(INPUT_DIR, "FigureS5G_mv_clean.csv")stringsAsFactors = FALSE)
 
 stats_file <- file.path(INPUT_DIR, "FigureS5G_stats.csv")
 if (file.exists(stats_file)) {
@@ -63,6 +62,4 @@ p_D <- ggplot(pc_df, aes(x = PC1, y = PC2, color = Group)) +
         legend.text   = element_text(size = 18),
         legend.title  = element_text(size = 18))
 
-ggsave(file.path(OUT_DIR, "PanelD_Multivariate.pdf"),
-       p_D, width = 12, height = 11)
-cat("Panel D saved.\n")
+ggsave(file.path(OUT_DIR, "FigureS5G_Multivariate.pdf"),p_D, width = 12, height = 11)

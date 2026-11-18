@@ -1,6 +1,6 @@
 library(RIdeogram)
 
-####################Figure 3F####################
+#Figure 3F
 markers <- read.csv("data/Figure3F_markers.csv",stringsAsFactors=FALSE)
 
 data(human_karyotype,package="RIdeogram")

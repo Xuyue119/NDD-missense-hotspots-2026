@@ -1,11 +1,8 @@
-####################Figure 6B/C/D: load plotting inputs####################
-# 1. Packages; all models and resampling were completed in the original analysis.
 library(ggplot2)
 library(scales)
 library(svglite)
 DATA <- "data"
 OUT <- "output"
-dir.create(OUT,recursive=TRUE,showWarnings=FALSE)
 read_input <- function(name,required){path<-file.path(DATA,name);if(!file.exists(path))stop("Missing: ",path);x<-read.csv(path,check.names=FALSE,stringsAsFactors=FALSE);m<-setdiff(required,names(x));if(length(m))stop(name," missing columns: ",paste(m,collapse=", "));x}
 p_label <- function(x) ifelse(is.finite(x),ifelse(x<.001,"p < 0.001",sprintf("p = %.3f",x)),"NT")
 save_plot <- function(p,name,w,h){print(p);ggsave(file.path(OUT,paste0(name,".svg")),plot=p,width=w,height=h,device=svglite::svglite);ggsave(file.path(OUT,paste0(name,".pdf")),plot=p,width=w,height=h,device="pdf")}
@@ -13,7 +10,7 @@ GROUPS <- c("Both","Non","Syn")
 DISPLAY <- c(Both="Both-clustered variants",Non="Non-clustered variants",Syn="dnSYN variants")
 PAL <- c(Both="#B23F36",Non="#4C83A8",Syn="#474554")
 
-####################Figure 6B: HC3 continuous regression heatmap####################
+#Figure 6B
 # 1. The plotted raw p-values and standardized betas are from the primary Both vs Non HC3 comparisons.
 b <- read_input("Figure6B_HC3.csv",c("phenotype","label","panel","position","beta","p_raw","p_adj","status"))
 left <- c("scq_total","rbsr_total","rbsr_compulsive","rbsr_stereotyped","age_onset_mos")
@@ -37,8 +34,7 @@ pB <- ggplot(b,aes(x=position,y=1))+
   theme_minimal(base_size=11)+theme(panel.grid=element_blank(),axis.text=element_blank(),axis.ticks=element_blank(),strip.background=element_blank(),strip.text=element_text(size=11,face="bold",hjust=.5),legend.position="right",panel.spacing.y=grid::unit(.25,"cm"),plot.title=element_text(face="bold",size=12),plot.subtitle=element_text(size=9))
 save_plot(pB,"Figure6B_continuous",10,7.5)
 
-####################Figure 6C: cognitive ordinal-category composition####################
-# 1. Rank 1-10 counts come from the 3-group phenotype RDS; p is the ordinal omnibus LRT.
+#Figure 6C: cognitive ordinal-category composition
 cog <- read_input("Figure6C_cognitive.csv",c("group","rank","label","n","n_valid","p_omnibus_raw"))
 if(nrow(cog)!=30L||!setequal(unique(cog$group),GROUPS)||!setequal(unique(cog$rank),1:10))stop("Figure6C grid inconsistent")
 if(anyDuplicated(cog[,c("group","rank")]))stop("Duplicate cognitive cells")
@@ -59,7 +55,7 @@ pC <- ggplot(cog,aes(x=group,y=n,fill=category))+
   guides(fill=guide_legend(nrow=2,byrow=TRUE))
 save_plot(pC,"Figure6C_cognitive",4,4.2)
 
-####################Figure 6D: crawling Kaplan-Meier cumulative attainment####################
+#Figure 6D: crawling Kaplan-Meier cumulative attainment
 # 1. Replot original complete-case KM steps; omnibus p is from adjusted 3-group Cox model.
 km <- read_input("Figure6D_KM.csv",c("group","month","attained","p_Cox_omnibus_raw"))
 if(!setequal(unique(km$group),GROUPS))stop("KM missing group")
@@ -76,4 +72,3 @@ pD <- ggplot(km,aes(x=month,y=attained,colour=group,group=group))+
   labs(title=paste0("(D) Crawling (",p_label(p_cox),")"),x="Age (months)",y="Cumulative attainment",colour=NULL)+
   theme_classic(base_size=10)+theme(legend.position="top",axis.text=element_text(colour="black",size=8))
 save_plot(pD,"Figure6D_crawl",4,4.2)
-message("Figure 6B, 6C, and 6D plots completed. KM is descriptive; Cox p is covariate-adjusted.")

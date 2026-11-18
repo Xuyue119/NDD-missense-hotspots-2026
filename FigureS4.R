@@ -1,12 +1,8 @@
-rm(list=ls())
-setwd("") # Set this to the local 05_figures folder before running
 library(ggplot2)
 library(dplyr)
 library(svglite)
 library(tidytext)
 library(cowplot)
-
-dir.create("output",showWarnings=FALSE)
 
 ####################Figure S4A: GTEx tissue expression####################
 # 1. Draw the 115-gene tissue profile from previously calculated sampling summaries

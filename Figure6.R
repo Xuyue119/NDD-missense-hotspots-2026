@@ -1,5 +1,4 @@
-rm(list=ls())
-setwd("") # Set to this repository's 04_figures directory before Source
+
 ####################Figure 6B/C/D: load plotting inputs####################
 # 1. Packages; all models and resampling were completed in the original analysis.
 library(ggplot2)

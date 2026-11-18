@@ -1,25 +1,13 @@
-# ============================================================
-# Panel D: 27 参数 PCA
-# 输入：
-#   <INPUT_DIR>/panelD_mv_clean.csv   —— UID, Group, 27 个参数列（列名随意）
-#   <INPUT_DIR>/panelD_stats.csv      —— 可选，单行：PERMANOVA_p, CV_AUC, Centroid_p
-#                                        若文件不存在则用占位数字
-# 输出：
-#   <OUT_DIR>/PanelD_Multivariate.pdf
-# ============================================================
-
 library(ggplot2)
 library(dplyr)
 
-INPUT_DIR <- "<INPUT_DIR>"
-OUT_DIR   <- "<OUT_DIR>"
-if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
+INPUT_DIR <- "data"
+OUT_DIR   <- "output"
 
-# ---------- 读数据 ----------
-mv_clean <- read.csv(file.path(INPUT_DIR, "panelD_mv_clean.csv"),
+mv_clean <- read.csv(file.path(INPUT_DIR, "FigureS5G_mv_clean.csv"),
                      stringsAsFactors = FALSE)
 
-stats_file <- file.path(INPUT_DIR, "panelD_stats.csv")
+stats_file <- file.path(INPUT_DIR, "FigureS5G_stats.csv")
 if (file.exists(stats_file)) {
   stats <- read.csv(stats_file, stringsAsFactors = FALSE)
   permanova_p <- stats$PERMANOVA_p[1]
@@ -31,16 +19,13 @@ if (file.exists(stats_file)) {
   cent_p      <- 0.155
 }
 
-# 自动识别参数列（排除 UID 和 Group）
 param_cols <- setdiff(colnames(mv_clean), c("UID", "Group"))
 
-# 只保留 Non / Both 两组
 mv_nb <- mv_clean %>%
   filter(Group %in% c("Non-clustered variants", "Both-clustered variants")) %>%
   mutate(Group = factor(Group,
                         levels = c("Non-clustered variants", "Both-clustered variants")))
 
-# ---------- PCA（画图必需） ----------
 pca_nd <- prcomp(scale(as.matrix(mv_nb[, param_cols])),
                  center = TRUE, scale. = FALSE)
 ve <- pca_nd$sdev^2 / sum(pca_nd$sdev^2)
@@ -56,7 +41,6 @@ subtitle_txt <- sprintf(
   "PERMANOVA p = %.3f  |  CV AUC = %.2f  |  Centroid p = %.3f",
   permanova_p, cv_auc_val, cent_p)
 
-# ---------- 画图 ----------
 p_D <- ggplot(pc_df, aes(x = PC1, y = PC2, color = Group)) +
   stat_ellipse(level = 0.95, type = "norm", linetype = "dashed",
                linewidth = 1.0, alpha = 0.7) +

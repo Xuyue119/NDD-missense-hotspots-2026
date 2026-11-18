@@ -1,12 +1,12 @@
 library(ggplot2)
 library(svglite)
-####################Figure S2A-D####################
-dir.create("output",showWarnings=FALSE)
+#Figure S2A-D
 red <- "#BF1D2D";blue <- "#3D549D"
 star <- function(p) ifelse(is.na(p),"",ifelse(p<0.001,"***",ifelse(p<0.01,"**",ifelse(p<0.05,"*",""))))
 save_panel <- function(p,name){print(p);ggsave(file.path("output",paste0(name,".svg")),p,width=8.5,height=7.5,units="cm");ggsave(file.path("output",paste0(name,".pdf")),p,width=8.5,height=7.5,units="cm")}
 base_theme <- theme_classic(base_size=10)+theme(axis.text=element_text(color="black"),axis.title=element_text(color="black"),axis.line=element_line(linewidth=0.5),axis.ticks=element_line(linewidth=0.5))
-####################1. Figure S2A: matched recurrence####################
+
+#Figure S2A
 d <- read.csv("data/FigureS2A_recurrence.csv",check.names=FALSE)
 d <- d[match(c("1","2","3","4+"),d$Category),]
 if(nrow(d)!=4 || anyNA(d$Category)) stop("Expected recurrence categories 1, 2, 3, 4+")
@@ -21,7 +21,8 @@ p <- ggplot()+
   scale_y_continuous(breaks=seq(0,4000,1000),limits=c(0,4800),expand=c(0,0))+
   labs(x="Number of dnMIS variants per gene",y="Number of genes")+base_theme
 save_panel(p,"FigureS2A")
-####################2. Figure S2B-D: predictor ECDFs####################
+
+#Figure S2B-D
 ecdf <- read.csv("data/FigureS2_Predictor_ECDF.csv",check.names=FALSE)
 stats <- read.csv("data/FigureS2_Plot_statistics.csv",check.names=FALSE)
 ecdf$Group <- factor(ecdf$Group,levels=c("Proband","Sibling"))

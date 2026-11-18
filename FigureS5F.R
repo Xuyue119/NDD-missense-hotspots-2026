@@ -5,7 +5,7 @@ INPUT_DIR <- "data"
 OUT_DIR   <- "output"
 
 
-df <- read.csv(file.path(INPUT_DIR, "panelC_parameters.csv"),
+df <- read.csv(file.path(INPUT_DIR, "FigureS5F_parameters.csv"),
                stringsAsFactors = FALSE)
 df <- df %>%
   filter(!is.na(SMD)) %>%
